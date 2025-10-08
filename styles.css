@@ -1,0 +1,53 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: #222;
+    color: #fff;
+    text-align: center;
+    padding: 30px;
+  }
+  
+  .game-container {
+    max-width: 500px;
+    margin: auto;
+    background: #333;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.7);
+  }
+  
+  input {
+    padding: 5px;
+    margin: 10px;
+    font-size: 16px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #ffcc00;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #ffdd33;
+  }
+  
+  .slot-display {
+    font-size: 30px;
+    margin: 20px 0;
+  }
+  
+  .slot-display div {
+    margin: 5px 0;
+  }
+
+  .input-group {
+    margin: 10px 0;
+  }
+  
+  .input-group label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
