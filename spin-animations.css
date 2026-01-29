@@ -1,0 +1,37 @@
+/* Realistic spinning reel animations */
+@keyframes spinReel {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-70px);
+        /* Move one symbol (60px + 10px gap) */
+    }
+}
+
+@keyframes reelStop {
+    0% {
+        transform: scale(1.2);
+        filter: blur(2px);
+    }
+
+    50% {
+        transform: scale(0.95);
+    }
+
+    100% {
+        transform: scale(1);
+        filter: blur(0);
+    }
+}
+
+.reel-column {
+    position: relative;
+}
+
+.spin-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

@@ -1,0 +1,55 @@
+/* Enhanced Input Animations */
+input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-main);
+    font-size: 1.1rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    transform: scale(1);
+}
+
+input:hover {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: var(--secondary);
+    transform: scale(1.02);
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 20px rgba(217, 70, 239, 0.4),
+        inset 0 0 10px rgba(217, 70, 239, 0.1);
+    transform: scale(1.05);
+    animation: inputGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes inputGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px rgba(217, 70, 239, 0.4),
+            inset 0 0 10px rgba(217, 70, 239, 0.1);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(217, 70, 239, 0.6),
+            inset 0 0 15px rgba(217, 70, 239, 0.2);
+    }
+}
+
+/* Number input specific styling */
+input[type="number"] {
+    cursor: pointer;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+    cursor: pointer;
+    height: 40px;
+}

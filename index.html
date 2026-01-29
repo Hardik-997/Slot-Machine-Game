@@ -1,40 +1,193 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Slot Machine Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neon Slots</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="node_modules/animate.css/animate.min.css">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="spin-animations.css">
+  <link rel="stylesheet" href="input-animations.css">
+  <link rel="stylesheet" href="confetti.css">
+  <link rel="stylesheet" href="symbols.css">
+  <link rel="stylesheet" href="theme-switcher.css">
 </head>
+
 <body>
-  <div class="game-container">
-    <h1>🎰 Slot Machine</h1>
+  <!-- Three.js Background Canvas -->
+  <canvas id="bg-canvas"></canvas>
 
-    <div class="balance-section">
-      <label for="deposit">Deposit Amount:</label>
-      <input type="number" id="deposit" min="1">
-      <button onclick="startGame()">Start Game</button>
-    </div>
-
-    <div id="game-area" style="display: none;">
-      <p id="balance-display">Balance: $0</p>
-
-      <label for="lines">Lines to Bet (1-3):</label>
-      <input type="number" id="lines" min="1" max="3">
-
-      <div class="input-group">
-        <label for="bet">Bet per Line:</label><br />
-        <input type="number" id="bet" min="1">
+  <!-- Theme Switcher -->
+  <div class="theme-switcher">
+    <button class="theme-toggle-btn" id="theme-toggle">
+      <span>🎨</span>
+      <span>Theme</span>
+    </button>
+    <div class="theme-panel" id="theme-panel">
+      <div class="theme-panel-header">Choose Theme</div>
+      <div class="theme-options">
+        <div class="theme-option" data-theme="cyberPurple">
+          <div class="theme-preview">
+            <div class="theme-color" style="background: #d946ef;"></div>
+            <div class="theme-color" style="background: #8b5cf6;"></div>
+            <div class="theme-color" style="background: #facc15;"></div>
+          </div>
+          <span class="theme-name">Cyber Purple</span>
+        </div>
+        <div class="theme-option" data-theme="vegasRed">
+          <div class="theme-preview">
+            <div class="theme-color" style="background: #dc2626;"></div>
+            <div class="theme-color" style="background: #b91c1c;"></div>
+            <div class="theme-color" style="background: #fbbf24;"></div>
+          </div>
+          <span class="theme-name">Vegas Red</span>
+        </div>
+        <div class="theme-option" data-theme="oceanBlue">
+          <div class="theme-preview">
+            <div class="theme-color" style="background: #0ea5e9;"></div>
+            <div class="theme-color" style="background: #0284c7;"></div>
+            <div class="theme-color" style="background: #f97316;"></div>
+          </div>
+          <span class="theme-name">Ocean Blue</span>
+        </div>
       </div>
-      
-      <button onclick="play()">Spin</button>
-
-      <div class="slot-display" id="slots"></div>
-      <p id="result"></p>
-      <button onclick="resetGame()">Reset</button>
+      <div class="audio-controls">
+        <div class="audio-control-group">
+          <label class="audio-label">Music</label>
+          <input type="range" class="audio-slider" id="music-volume" min="0" max="100" value="30">
+        </div>
+        <button class="audio-toggle-btn" id="music-toggle" title="Toggle Music">🎵</button>
+      </div>
+      <div class="audio-controls" style="margin-top: 10px;">
+        <div class="audio-control-group">
+          <label class="audio-label">Sound FX</label>
+          <input type="range" class="audio-slider" id="sfx-volume" min="0" max="100" value="50">
+        </div>
+        <button class="audio-toggle-btn active" id="sfx-toggle" title="Toggle Sound Effects">🔊</button>
+      </div>
     </div>
   </div>
 
+  <div class="app-container">
+    <header>
+      <h1 class="animate__animated animate__backInDown">🎰 Neon Slots</h1>
+      <button class="info-btn" id="paytable-btn" title="View Paytable">ℹ</button>
+    </header>
+
+    <main class="game-container">
+      <!-- Deposit Section -->
+      <div id="deposit-section" class="card">
+        <h2>Welcome</h2>
+        <p>Enter your deposit to start playing.</p>
+        <div class="input-group">
+          <label for="deposit">Deposit Amount ($)</label>
+          <input type="number" id="deposit" min="1" placeholder="100">
+        </div>
+        <button onclick="startGame()" class="btn-primary animate__animated animate__jello">Start Game</button>
+      </div>
+
+      <!-- Game Area -->
+      <div id="game-area" class="card hidden">
+        <div class="stats-bar">
+          <div class="stat">
+            <span class="label">Balance</span>
+            <span id="balance-display" class="value">$0</span>
+          </div>
+          <div class="stat">
+            <span class="label">Last Win</span>
+            <span id="result" class="value highlight">-</span>
+          </div>
+        </div>
+
+        <div class="slot-machine">
+          <div class="reels-container" id="slots">
+            <!-- Reels will be injected here -->
+            <div class="reel">?</div>
+            <div class="reel">?</div>
+            <div class="reel">?</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="control-group">
+            <label for="lines">Lines (1-3)</label>
+            <input type="number" id="lines" min="1" max="3" value="1">
+          </div>
+          <div class="control-group">
+            <label for="bet">Bet per Line ($)</label>
+            <input type="number" id="bet" min="1" value="10">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button onclick="play()" id="spin-btn"
+            class="btn-primary spin-btn animate__animated animate__jello">SPIN</button>
+          <button onclick="resetGame()" class="btn-secondary">Cash Out</button>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>Play Responsibly</p>
+    </footer>
+  </div>
+
+  <!-- Paytable Modal -->
+  <div class="paytable-modal" id="paytable-modal">
+    <div class="paytable-content">
+      <div class="paytable-header">
+        <h2>Symbol Values</h2>
+        <button class="paytable-close" id="paytable-close">×</button>
+      </div>
+      <div class="paytable-row">
+        <div class="paytable-symbol">
+          <div class="paytable-symbol-icon">💎</div>
+          <div class="paytable-symbol-name">Diamond</div>
+        </div>
+        <div class="paytable-value">5x</div>
+      </div>
+      <div class="paytable-row">
+        <div class="paytable-symbol">
+          <div class="paytable-symbol-icon">⭐</div>
+          <div class="paytable-symbol-name">Star</div>
+        </div>
+        <div class="paytable-value">4x</div>
+      </div>
+      <div class="paytable-row">
+        <div class="paytable-symbol">
+          <div class="paytable-symbol-icon">🍒</div>
+          <div class="paytable-symbol-name">Cherry</div>
+        </div>
+        <div class="paytable-value">3x</div>
+      </div>
+      <div class="paytable-row">
+        <div class="paytable-symbol">
+          <div class="paytable-symbol-icon">🍋</div>
+          <div class="paytable-symbol-name">Lemon</div>
+        </div>
+        <div class="paytable-value">2x</div>
+      </div>
+      <div class="paytable-footer">
+        <p>Match 3 symbols on an active line to win!</p>
+        <p>Winnings = Bet × Symbol Value</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Three.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Animation Scripts -->
+  <script src="sounds.js"></script>
+  <script src="win-animations.js"></script>
+  <script src="themes.js"></script>
+  <script src="animations.js"></script>
   <script src="main.js"></script>
+  <script src="ui-controls.js"></script>
 </body>
+
 </html>
